@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Case Connectivity Dashboard | PowerBI Style</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="left-rail" aria-label="Report navigation">
+        <div class="brand-mark">PBI</div>
+        <a class="rail-item active" href="#report" title="Report">
+          <span class="rail-glyph bars" aria-hidden="true"></span>
+          <span>Report</span>
+        </a>
+        <a class="rail-item" href="#data" title="Data">
+          <span class="rail-glyph table" aria-hidden="true"></span>
+          <span>Data</span>
+        </a>
+        <a class="rail-item" href="#refresh" title="Refresh">
+          <span class="rail-glyph upload" aria-hidden="true"></span>
+          <span>Refresh</span>
+        </a>
+      </aside>
+
+      <main class="workspace" id="report">
+        <header class="command-bar">
+          <div class="report-title">
+            <span class="workspace-label">Client Site Connectivity Project</span>
+            <h1>Case Connectivity Dashboard</h1>
+          </div>
+          <div class="command-actions">
+            <button class="icon-button" id="exportCsvButton" type="button" title="Export tracker CSV">
+              <span class="button-icon download" aria-hidden="true"></span>
+              <span>CSV</span>
+            </button>
+            <button class="icon-button" id="exportStateButton" type="button" title="Export backup JSON">
+              <span class="button-icon archive" aria-hidden="true"></span>
+              <span>Backup</span>
+            </button>
+            <label class="icon-button primary" for="sourceUpload" title="Upload a monthly CSV source">
+              <span class="button-icon upload" aria-hidden="true"></span>
+              <span>Update Source</span>
+            </label>
+            <input id="sourceUpload" type="file" accept=".csv,.txt,.xlsx,.xls" />
+          </div>
+        </header>
+
+        <section class="source-strip" id="refresh">
+          <div>
+            <span class="section-kicker">Current Source</span>
+            <strong id="sourceName">Loading source...</strong>
+            <span id="sourceMeta">Preparing dashboard</span>
+          </div>
+          <div class="source-actions">
+            <label class="text-button" for="backupUpload">Import Backup</label>
+            <input id="backupUpload" type="file" accept=".json" />
+            <button class="text-button" id="resetButton" type="button">Reset Demo</button>
+          </div>
+        </section>
+
+        <section class="report-grid">
+          <aside class="slicer-pane" aria-label="Filters">
+            <div class="pane-header">
+              <span class="section-kicker">Slicers</span>
+              <strong>Filters</strong>
+            </div>
+            <label class="filter-control">
+              <span>Search</span>
+              <input id="searchInput" type="search" placeholder="Case, code, location, SPOC" />
+            </label>
+            <label class="filter-control">
+              <span>Location</span>
+              <select id="locationFilter">
+                <option value="all">All</option>
+              </select>
+            </label>
+            <label class="filter-control">
+              <span>Case Team Contacted</span>
+              <select id="contactFilter">
+                <option value="all">All</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+                <option value="NA">NA</option>
+              </select>
+            </label>
+            <label class="filter-control">
+              <span>Network Connectivity</span>
+              <select id="networkFilter">
+                <option value="all">All</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+                <option value="NA">NA</option>
+                <option value="In Progress">In Progress</option>
+              </select>
+            </label>
+            <label class="filter-control">
+              <span>Meeting Room</span>
+              <select id="meetingFilter">
+                <option value="all">All</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+                <option value="NA">NA</option>
+                <option value="In Progress">In Progress</option>
+              </select>
+            </label>
+            <label class="filter-control">
+              <span>Source Status</span>
+              <select id="sourceFilter">
+                <option value="all">All</option>
+                <option value="Latest file">Latest file</option>
+                <option value="Carried over">Carried over</option>
+              </select>
+            </label>
+            <label class="toggle-control">
+              <input id="ongoingOnly" type="checkbox" />
+              <span>Ongoing only</span>
+            </label>
+          </aside>
+
+          <section class="report-canvas">
+            <div class="kpi-grid" aria-label="Dashboard widgets">
+              <article class="kpi-card accent">
+                <span>Total Number of Cases Ongoing</span>
+                <strong id="ongoingCount">0</strong>
+                <small id="ongoingCaption">Using today's date</small>
+              </article>
+              <article class="kpi-card">
+                <span>Case Team Contacted</span>
+                <strong id="contactedCount">0</strong>
+                <div class="status-strip" id="contactedStrip" aria-label="Case team contacted status mix"></div>
+              </article>
+              <article class="kpi-card">
+                <span>Network Connectivities Done</span>
+                <strong id="networkDoneCount">0</strong>
+                <div class="status-strip" id="networkStrip" aria-label="Network connectivity status mix"></div>
+              </article>
+              <article class="kpi-card">
+                <span>Meeting Room Enablement Done</span>
+                <strong id="meetingDoneCount">0</strong>
+                <div class="status-strip" id="meetingStrip" aria-label="Meeting room enablement status mix"></div>
+              </article>
+            </div>
+
+            <div class="visual-grid">
+              <section class="visual-card wide">
+                <div class="visual-title">
+                  <span class="section-kicker">By Location</span>
+                  <strong>Case Distribution</strong>
+                </div>
+                <div class="location-chart" id="locationChart"></div>
+              </section>
+              <section class="visual-card">
+                <div class="visual-title">
+                  <span class="section-kicker">Status</span>
+                  <strong>Completion Mix</strong>
+                </div>
+                <div class="status-matrix" id="statusMatrix"></div>
+              </section>
+              <section class="visual-card">
+                <div class="visual-title">
+                  <span class="section-kicker">Dates</span>
+                  <strong>Timeline Snapshot</strong>
+                </div>
+                <div class="timeline-list" id="timelineList"></div>
+              </section>
+            </div>
+          </section>
+        </section>
+
+        <section class="table-section" id="data">
+          <div class="table-title-row">
+            <div>
+              <span class="section-kicker">Editable Tracker</span>
+              <h2>Case-Level Connectivity Status</h2>
+            </div>
+            <span id="visibleCount">0 cases shown</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Case Name</th>
+                  <th>Case Location</th>
+                  <th>Case Team SPOC</th>
+                  <th>Case Start Date</th>
+                  <th>Case End Date</th>
+                  <th>Case Code</th>
+                  <th>IT Team SPOC</th>
+                  <th>Case Team Contacted</th>
+                  <th>Network Connectivity</th>
+                  <th>Meeting Room Enablement</th>
+                  <th>Remarks</th>
+                  <th>Source</th>
+                </tr>
+              </thead>
+              <tbody id="caseTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <div class="toast" id="toast" role="status" aria-live="polite"></div>
+      </main>
+    </div>
+
+    <script src="./config.js"></script>
+    <script src="./data.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
